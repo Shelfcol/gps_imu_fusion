@@ -7,6 +7,9 @@
 
 #include <eigen3/Eigen/Dense>
 
+
+//? 坐标系关系
+// 右前天->前右地
 inline void TransformCoordinate(Eigen::Vector3d& vec){
     double kDegree2Radian = M_PI / 180.0;
 

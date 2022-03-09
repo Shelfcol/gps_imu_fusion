@@ -9,9 +9,9 @@
 bool IMUFlow::ReadIMUData(const std::string &path, std::vector<IMUData> &imu_data_buff, const int skip_rows) {
     constexpr double D2R = 0.017453292519943295;
 
-    std::string accel_file_path = path + "/accel-0.csv";
+    std::string accel_file_path = path + "/accel-0.csv"; // 加速度
     std::string ref_accel_file_path = path + "/ref_accel.csv";
-    std::string gyro_file_path = path + "/gyro-0.csv";
+    std::string gyro_file_path = path + "/gyro-0.csv"; // 角速度
     std::string ref_gyro_file_path = path + "/ref_gyro.csv";
     std::string time_file_path = path + "/time.csv";
 
@@ -100,6 +100,7 @@ bool IMUFlow::ReadIMUData(const std::string &path, std::vector<IMUData> &imu_dat
         TransformCoordinate(imu_data.true_angle_velocity);
 
         imu_data_buff.emplace_back(imu_data);
+        printf("IMU data size = %d\n",imu_data_buff.size());
     }
 
     return true;
@@ -125,6 +126,10 @@ bool IMUFlow::ReadIMUData(const std::string &path, std::deque<IMUData> &imu_data
         || !time_file.is_open())
     {
         std::cerr << "failure to open imu file" << std::endl;
+    }
+    else
+    {
+        printf("open imu file success\n");
     }
 
     IMUData imu_data;

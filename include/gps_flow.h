@@ -6,7 +6,8 @@
 #define GPS_IMU_FUSION_GPS_FLOW_H
 
 #include "gps_data.h"
-#include "GeographicLib/LocalCartesian.hpp"
+// #include "GeographicLib/LocalCartesian.hpp"
+#include "/home/gxf/multi-sensor-fusion/eskf-gps-imu-fusion/3rd/GeographicLib/include/Geocentric/LocalCartesian.hpp"
 
 #include <deque>
 #include <vector>

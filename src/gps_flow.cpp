@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 
+
+
 GeographicLib::LocalCartesian GPSFlow::geo_converter_{32.0, 120.0, 0.0};
 
 Eigen::Vector3d GPSFlow::LLA2NED(const Eigen::Vector3d &lla) {
@@ -16,6 +18,7 @@ Eigen::Vector3d GPSFlow::LLA2NED(const Eigen::Vector3d &lla) {
     return ned;
 }
 
+//? 明明是ENU，为何取名NED
 void GPSFlow::LLA2NED(GPSData &gps_data) {
     //lla -> ENU frame
     geo_converter_.Forward(gps_data.position_lla.x(),

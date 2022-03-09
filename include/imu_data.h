@@ -12,9 +12,9 @@ class IMUData{
 public:
     IMUData() = default;
 
-    double time = 0.0;
-    Eigen::Vector3d linear_accel = Eigen::Vector3d::Zero();
-    Eigen::Vector3d angle_velocity = Eigen::Vector3d::Zero();
+    double time = 0.0; // 时间
+    Eigen::Vector3d linear_accel = Eigen::Vector3d::Zero(); // 加速度
+    Eigen::Vector3d angle_velocity = Eigen::Vector3d::Zero(); // 角速度
 
     Eigen::Vector3d true_linear_accel = Eigen::Vector3d::Zero();
     Eigen::Vector3d true_angle_velocity = Eigen::Vector3d::Zero();

@@ -7,12 +7,13 @@
 
 #include "imu_data.h"
 #include "gps_data.h"
+#include "filter_interface.h"
 
 #include <deque>
 #include <yaml-cpp/yaml.h>
 #include <eigen3/Eigen/Dense>
 
-class ESKF {
+class ESKF :public FilterInterface {
 public:
     ESKF(const YAML::Node &node);
 
@@ -46,6 +47,7 @@ public:
 
 private:
     void SetCovarianceQ(double gyro_noise_cov, double accel_noise_cov);
+    void SetCovarianceW(double gyro_noise_cov, double accel_noise_cov);
 
     void SetCovarianceR(double posi_noise_cov);
 
@@ -109,21 +111,22 @@ private:
 
 private:
     static const unsigned int DIM_STATE = 15;
-    static const unsigned int DIM_STATE_NOISE = 6;
-    static const unsigned int DIM_MEASUREMENT = 3;
-    static const unsigned int DIM_MEASUREMENT_NOISE = 3;
+    static const unsigned int DIM_STATE_NOISE = 6; // 噪声只有6维，陀螺仪和加速度计的bias
+    static const unsigned int DIM_MEASUREMENT = 3; // 观测向量只有6维
+    static const unsigned int DIM_MEASUREMENT_NOISE = 3; // 观测噪声
 
-    static const unsigned int INDEX_STATE_POSI = 0;
-    static const unsigned int INDEX_STATE_VEL = 3;
-    static const unsigned int INDEX_STATE_ORI = 6;
-    static const unsigned int INDEX_STATE_GYRO_BIAS = 9;
-    static const unsigned int INDEX_STATE_ACC_BIAS = 12;
+    static const unsigned int INDEX_STATE_POSI = 0; // 位置
+    static const unsigned int INDEX_STATE_VEL = 3; // 速度
+    static const unsigned int INDEX_STATE_ORI = 6; // 角度
+    static const unsigned int INDEX_STATE_GYRO_BIAS = 9; // 陀螺仪bias
+    static const unsigned int INDEX_STATE_ACC_BIAS = 12; // 加速度计bias
     static const unsigned int INDEX_MEASUREMENT_POSI = 0;
 
-    typedef typename Eigen::Matrix<double, DIM_STATE, 1> TypeVectorX;
-    typedef typename Eigen::Matrix<double, DIM_MEASUREMENT, 1> TypeVectorY;
-    typedef typename Eigen::Matrix<double, DIM_STATE, DIM_STATE> TypeMatrixF;
-    typedef typename Eigen::Matrix<double, DIM_STATE, DIM_STATE_NOISE> TypeMatrixB;
+    typedef typename Eigen::Matrix<double, DIM_STATE, 1> TypeVectorX; // 状态向量
+    typedef typename Eigen::Matrix<double, DIM_MEASUREMENT, 1> TypeVectorY; // 观测向量 GPS的位置
+    typedef typename Eigen::Matrix<double, DIM_STATE, DIM_STATE> TypeMatrixF; //15*15
+    typedef typename Eigen::Matrix<double, DIM_STATE, DIM_STATE_NOISE> TypeMatrixB; //15*6
+    typedef typename Eigen::Matrix<double, DIM_STATE_NOISE, 1> TypeMatrixW; //6*1 陀螺仪和加速度计噪声
     typedef typename Eigen::Matrix<double, DIM_STATE_NOISE, DIM_STATE_NOISE> TypeMatrixQ;
     typedef typename Eigen::Matrix<double, DIM_STATE, DIM_STATE> TypeMatrixP;
     typedef typename Eigen::Matrix<double, DIM_STATE, DIM_MEASUREMENT> TypeMatrixK;
@@ -135,6 +138,7 @@ private:
     TypeVectorY Y_;
     TypeMatrixF F_;
     TypeMatrixB B_;
+    TypeMatrixW W_;
     TypeMatrixQ Q_;
     TypeMatrixP P_;
     TypeMatrixK K_;
@@ -159,10 +163,10 @@ private:
 
     double L_ = 0.0;//纬度
 
-    std::deque<IMUData> imu_data_buff_;
+    std::deque<IMUData> imu_data_buff_; // 只保存两个IMU数据
 
 public:
-    void GetFGY(TypeMatrixF& F,TypeMatrixG& G, TypeVectorY & Y);
+    // void GetFGY(TypeMatrixF& F,TypeMatrixG& G, TypeVectorY & Y);
 };
 
 #endif //GPS_IMU_FUSION_ESKF_H

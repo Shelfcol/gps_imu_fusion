@@ -13,8 +13,9 @@ covariance:
     ori: 1.0e-6
     epsilon: 1.0e-6
     delta: 1.0e-6
-  process:
+  process: #Q
     gyro: 1.0e-5
     accel: 1.0e-4
   measurement:
     posi: 10
+  

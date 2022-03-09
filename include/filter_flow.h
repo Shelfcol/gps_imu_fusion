@@ -1,22 +1,22 @@
 //
 // Created by meng on 2021/2/24.
 //
-#ifndef GPS_IMU_FUSION_ESKF_FLOW_H
-#define GPS_IMU_FUSION_ESKF_FLOW_H
+#ifndef FILTER_FLOW_H
+#define FILTER_FLOW_H
 
 #include "eskf.h"
 #include "imu_flow.h"
 #include "gps_flow.h"
 #include "observability_analysis.h"
-
+#include "filter_interface.h"
 #include <memory>
 #include <deque>
 #include <iostream>
 
-class ESKFFlow{
+class FilterFlow{
 public:
-    ESKFFlow() = default;
-    ESKFFlow(const std::string& work_space_path);
+    FilterFlow() = default;
+    FilterFlow(const std::string& work_space_path);
 
     /*!
      * 从本地文件中读取IMU和GPS的数据
@@ -46,7 +46,7 @@ public:
     void SavePose(std::ofstream &ofs, const Eigen::Matrix4d &pose);
 
 private:
-    std::shared_ptr<ESKF> eskf_ptr_;
+    std::shared_ptr<FilterInterface> filter_ptr_; // 滤波方法
     std::shared_ptr<IMUFlow> imu_flow_ptr_;
     std::shared_ptr<GPSFlow> gps_flow_ptr_;
 

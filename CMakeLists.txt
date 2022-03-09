@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(gps_imu_fusion)
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
 
 set(ALL_TARGET_LIBRARIES "")
@@ -17,7 +17,7 @@ add_library(DEPS SHARED
     src/eskf.cpp
     src/gps_flow.cpp
     src/imu_flow.cpp
-    src/eskf_flow.cpp
+    src/filter_flow.cpp
     src/observability_analysis.cpp
     3rd/GeographicLib/src/LocalCartesian.cpp
     3rd/GeographicLib/src/Geocentric.cpp

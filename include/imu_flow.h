@@ -14,6 +14,7 @@ class IMUFlow{
 public:
     IMUFlow() = default;
 
+    // 一个用deque，一个用vector
     static bool ReadIMUData(const std::string& path,
                             std::vector<IMUData>& imu_data_buff,
                             const int skip_rows = 1);
