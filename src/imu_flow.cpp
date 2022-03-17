@@ -75,7 +75,7 @@ bool IMUFlow::ReadIMUData(const std::string &path, std::vector<IMUData> &imu_dat
         std::getline(ss, temp, ',');
         imu_data.true_linear_accel.z() = std::stod(temp);
 
-        TransformCoordinate(imu_data.true_angle_velocity);
+        TransformCoordinate(imu_data.true_linear_accel);
 
         ss.clear();
         ss << gyro_line;

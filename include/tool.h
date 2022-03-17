@@ -9,7 +9,7 @@
 
 
 //? 坐标系关系
-// 右前天->前右地
+// 右前天->前右地。这里取逆，则为 前右地->右前天。因为数据坐标系是NED，而GPS转换的是右前天，所以需要把IMU相关的数据转换到右前天。
 inline void TransformCoordinate(Eigen::Vector3d& vec){
     double kDegree2Radian = M_PI / 180.0;
 

@@ -23,6 +23,9 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
     if(filter_method == "ESKF"){
         filter_ptr_ = std::make_shared<ESKF>(config_node);
     }
+    else if(filter_method == "EKF"){
+        filter_ptr_ = std::make_shared<EKF>(config_node);
+    }
     else {
         printf("no corres filter method");
         exit(-1);

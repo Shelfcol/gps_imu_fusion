@@ -1,4 +1,4 @@
-filter_method: ESKF
+filter_method: ESKF #ESKF
 
 earth:
   rotation_speed: 7.272205216e-05
@@ -13,9 +13,9 @@ covariance:
     ori: 1.0e-6
     epsilon: 1.0e-6
     delta: 1.0e-6
-  process: #Q
+  process: # Q
     gyro: 1.0e-5
     accel: 1.0e-4
   measurement:
-    posi: 10
+    posi: 8
   

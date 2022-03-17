@@ -15,6 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(DEPS SHARED
     src/eskf.cpp
+    src/ekf.cpp
     src/gps_flow.cpp
     src/imu_flow.cpp
     src/filter_flow.cpp
@@ -32,8 +33,8 @@ add_executable(gps_imu_fusion app/gps_imu_fusion.cpp)
 target_link_libraries(gps_imu_fusion DEPS)
 
 #################  TEST  #################
-add_executable(test_gps test/test_gps.cpp)
-target_link_libraries(test_gps DEPS)
+#add_executable(test_gps test/test_gps.cpp)
+# target_link_libraries(test_gps DEPS)
 
-add_executable(test_imu test/test_imu.cpp)
-target_link_libraries(test_imu DEPS)
+# add_executable(test_imu test/test_imu.cpp)
+#target_link_libraries(test_imu DEPS)
