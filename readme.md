@@ -10,8 +10,9 @@
 蓝色轨迹：fuse IMU and GPS
 红色轨迹：GPS
 
-安装方法请参考博客[《【附源码+代码注释】误差状态卡尔曼滤波(error-state Kalman Filter)实现GPS+IMU融合，EKF ESKF GPS+IMU》](https://blog.csdn.net/u011341856/article/details/114262451)
+本人的实现方法请参考博客[《Quaternion kinematics for error state kalman filter实现GPS+IMU融合，（附源码）》](https://blog.csdn.net/qq_38650944/article/details/123580686)
 
+欢迎大家交流呀！
 ## 1.  依赖库
 
 Eigen
@@ -52,7 +53,6 @@ cd eskf-gps-imu-fusion/data
 evo_traj kitti fused.txt gt.txt measured.txt -p
 ```
 
-> 需要安装evo，可以参考我的博客中的介绍：https://blog.csdn.net/u011341856/article/details/104594392?spm=1001.2014.3001.5501
+> 需要安装evo，可以参考博客中的介绍：https://blog.csdn.net/u011341856/article/details/104594392?spm=1001.2014.3001.5501
 
 
-本人的实现方法请参考博客[《Quaternion kinematics for error state kalman filter实现GPS+IMU融合，（附源码）》](https://blog.csdn.net/qq_38650944/article/details/123580686)
