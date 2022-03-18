@@ -5,9 +5,8 @@
 #ifndef GPS_IMU_FUSION_GPS_DATA_H
 #define GPS_IMU_FUSION_GPS_DATA_H
 
-// #include "GeographicLib/LocalCartesian.hpp"
 #include <eigen3/Eigen/Core>
-#include "/home/gxf/multi-sensor-fusion/eskf-gps-imu-fusion/3rd/GeographicLib/include/Geocentric/LocalCartesian.hpp"
+#include "../3rd/GeographicLib/include/Geocentric/LocalCartesian.hpp"
 class GPSData{
 public:
     GPSData() = default;
