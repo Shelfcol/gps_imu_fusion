@@ -2,18 +2,9 @@
 // Created by meng on 2021/2/19.
 //
 #include "eskf.h"
+#include "tool.h"
 #include "../3rd/sophus/se3.hpp"
 
-constexpr double kDegree2Radian = M_PI / 180.0;
-
-Eigen::Matrix3d BuildSkewMatrix(const Eigen::Vector3d& vec){
-    Eigen::Matrix3d matrix;
-    matrix << 0.0,     -vec[2],   vec[1],
-              vec[2],    0.0,     -vec[0],
-              -vec[1],   vec[0],    0.0;
-
-    return matrix;
-}
 
 ESKF::ESKF(const YAML::Node &node) {
     double gravity = node["earth"]["gravity"].as<double>();

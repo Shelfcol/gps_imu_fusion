@@ -26,6 +26,9 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
     else if(filter_method == "EKF"){
         filter_ptr_ = std::make_shared<EKF>(config_node);
     }
+    else if(filter_method == "ESKFQK"){
+        filter_ptr_ = std::make_shared<ESKFQK>(config_node);
+    }
     else {
         printf("no corres filter method");
         exit(-1);
@@ -34,7 +37,7 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
 
 // 读取GPS和IMU数据
 bool FilterFlow::ReadData() {
-    const std::string data_path = work_space_path_ + "/data/raw_data";
+    const std::string data_path = work_space_path_ + "/data/raw_data1";
 
     if (imu_flow_ptr_->ReadIMUData(data_path, imu_data_buff_) &&
         gps_flow_ptr_->ReadGPSData(data_path, gps_data_buff_)

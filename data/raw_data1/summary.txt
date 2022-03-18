@@ -1,0 +1,26 @@
+
+------------------------------------------------------------
+Sample frequency of IMU: [fs] = 100.0 Hz
+Reference frame: 0
+Simulation time duration: 542.5 s
+Simulation runs: 1
+
+------------------------------------------------------------
+Simulation results are saved to /home/gxf/multi-sensor-fusion/gnss-ins-sim/demo_saved_data/2022-03-18-16-41-53
+The following results are saved:
+	time: sample time
+	ref_pos: true LLA pos in the navigation frame
+	ref_vel: true vel in the NED frame
+	ref_att_euler: true attitude (Euler angles, ZYX)
+	ref_accel: true accel in the body frame
+	ref_gyro: true angular velocity in the body frame
+	gps_time: GPS sample time
+	ref_gps: true GPS LLA position and NED velocity
+	gps_visibility: GPS visibility
+	ref_mag: true magnetic field in the body frame
+	accel: accel measurements
+	gyro: gyro measurements
+	gps: GPS LLA position and NED velocity measurements
+	mag: magnetometer measurements
+	ref_att_quat: true attitude (quaternion)
+

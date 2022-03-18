@@ -5,6 +5,7 @@
 #define FILTER_FLOW_H
 
 #include "eskf.h"
+#include "eskf_qk.h"
 #include "ekf.h"
 #include "imu_flow.h"
 #include "gps_flow.h"

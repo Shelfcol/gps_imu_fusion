@@ -1,4 +1,4 @@
-filter_method: ESKF #ESKF
+filter_method: ESKFQK #ESKF ,ESKFQK
 
 earth:
   rotation_speed: 7.272205216e-05
@@ -18,4 +18,36 @@ covariance:
     accel: 1.0e-4
   measurement:
     posi: 8
+
+# quaternion kinematics for error state kalman filter
+# qk_covariance:
+#   prior:
+#     posi: 1.0e-4
+#     vel: 1.0e-4
+#     ori: 1.0e-6
+#     accel_delta: 1.0e-6
+#     gyro_delta: 1.0e-6
+#     g_delta: 1.0e-6
+#   process: # Q
+#     vel_delta: 1.0e-5
+#     ori_delta: 1.0e-5
+#     accel_delta: 1.0e-4
+#     gyro_delta: 1.0e-5
+#   measurement:
+#     posi: 8
   
+qk_covariance:
+  prior:
+    posi: 1.0e-1
+    vel: 1.0e-1
+    ori: 1.0e-1
+    accel_delta: 1.0e-1
+    gyro_delta: 1.0e-1
+    g_delta: 1.0e-1
+  process: # Q
+    vel_delta: 1.0e-3
+    ori_delta: 1.0e-1
+    accel_delta: 1.0e-2
+    gyro_delta: 1.0e-3
+  measurement:
+    posi: 35

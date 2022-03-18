@@ -100,7 +100,7 @@ bool IMUFlow::ReadIMUData(const std::string &path, std::vector<IMUData> &imu_dat
         TransformCoordinate(imu_data.true_angle_velocity);
 
         imu_data_buff.emplace_back(imu_data);
-        printf("IMU data size = %d\n",imu_data_buff.size());
+        printf("IMU data size = %d\n",(int)imu_data_buff.size());
     }
 
     return true;
