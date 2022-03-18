@@ -1,5 +1,7 @@
 filter_method: ESKFQK #ESKF ,ESKFQK
 
+data_path: /data/raw_data1 #数据使用  /data/raw_data; /data/raw_data1: raw_data是使用mid-accuracy IMU生成， raw_data1是使用low-accuracy IMU生成
+
 earth:
   rotation_speed: 7.272205216e-05
   gravity: 9.79484197226504
@@ -11,15 +13,16 @@ covariance:
     posi: 1.0e-4
     vel: 1.0e-4
     ori: 1.0e-6
-    epsilon: 1.0e-6
-    delta: 1.0e-6
+    gyro_delta: 1.0e-6
+    accel_delta: 1.0e-6
   process: # Q
-    gyro: 1.0e-5
-    accel: 1.0e-4
+    gyro_delta: 1.0e-5
+    accel_delta: 1.0e-4
   measurement:
     posi: 8
 
 # quaternion kinematics for error state kalman filter
+# 使用raw data
 # qk_covariance:
 #   prior:
 #     posi: 1.0e-4
@@ -35,7 +38,8 @@ covariance:
 #     gyro_delta: 1.0e-5
 #   measurement:
 #     posi: 8
-  
+
+# 使用raw_data1,也可以用在raw_data上，只是精度会下降
 qk_covariance:
   prior:
     posi: 1.0e-1

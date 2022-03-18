@@ -23,15 +23,12 @@ ESKFQK::ESKFQK(const YAML::Node &node) {
     X_.setZero(); // 初始化为零矩阵
     Y_.setZero(); // 初始化为零矩阵
 
-    Fx_.setZero(); // 初始化为零矩阵
-    Fx_.block<3,3>(0,0) = Fx_.block<3,3>(3,3) = Fx_.block<3,3>(9,9) = Fx_.block<3,3>(12,12) = Fx_.block<3,3>(15,15)= Eigen::Matrix3d::Identity();
     Fi_.block<12,12>(3,0) = Eigen::Matrix<double,12,12>::Identity();
     SetCovarianceQi(cov_process_vel, cov_process_ori,cov_process_accel,cov_process_gyro);
     SetCovarianceP(cov_prior_posi, cov_prior_vel, cov_prior_ori,
                    cov_prior_accel, cov_prior_gyro, cov_prior_g);
     
-    Hx_.setZero();
-    Hx_.block<3,3>(0,0) = Eigen::Matrix3d::Identity();
+
     SetCovarianceV(cov_measurement_posi);
 }
 
@@ -85,9 +82,10 @@ bool ESKFQK::Init(const GPSData &curr_gps_data, const IMUData &curr_imu_data) {
 //     Y = Y_;
 // }
 
-bool ESKFQK::Correct(const GPSData &curr_gps_data) {
-    curr_gps_data_ = curr_gps_data;
-
+bool ESKFQK::ObservationOfErrorState()
+{
+    Hx_.setZero();
+    Hx_.block<3,3>(0,0) = Eigen::Matrix3d::Identity();
     // X_dx_;
     X_dx_.block<6,6>(0,0) = Eigen::Matrix<double,6,6>::Identity();
     X_dx_.block<9,9>(10,9) = Eigen::Matrix<double,9,9>::Identity();
@@ -99,13 +97,18 @@ bool ESKFQK::Correct(const GPSData &curr_gps_data) {
                                                                 qw,-qz,qy,
                                                                 qz,qw,-qx,
                                                                 -qy,qx,qw).finished();
-
     H_ = Hx_*X_dx_;
 
     K_ = P_ * H_.transpose() * (H_ * P_ * H_.transpose() +V_).inverse(); // kalman增益
-    X_ = K_*(curr_gps_data_.position_ned-pose_);
+    X_ = K_*(curr_gps_data_.position_ned - pose_);
 
     P_ = (TypeMatrixP::Identity() - K_ * H_) * P_*(TypeMatrixP::Identity() - K_ * H_).transpose()+K_*V_*K_.transpose();
+    
+}
+
+bool ESKFQK::Correct(const GPSData &curr_gps_data) {
+    curr_gps_data_ = curr_gps_data;
+    ObservationOfErrorState();
     EliminateError();
     ResetState();
 
@@ -133,15 +136,21 @@ bool ESKFQK::UpdateErrorState(const Eigen::Vector3d& a_m, const Eigen::Vector3d&
     Eigen::Matrix3d A_M = BuildSkewMatrix(a_m-accel_bias_);
 
     // Fx
+    Fx_.setZero(); // 初始化为零矩阵
+    Fx_.block<3,3>(0,0) = Fx_.block<3,3>(3,3) = Fx_.block<3,3>(9,9) = Fx_.block<3,3>(12,12) = Fx_.block<3,3>(15,15)= Eigen::Matrix3d::Identity();
+  
     Eigen::Matrix3d R = q_.toRotationMatrix();
     Fx_.block<3,3>(INDEX_STATE_POSI,INDEX_STATE_VEL) =  Eigen::Matrix3d::Identity()*dt;
     Fx_.block<3,3>(INDEX_STATE_VEL,INDEX_STATE_ORI) =  -R*A_M*dt;
     Fx_.block<3,3>(INDEX_STATE_VEL,INDEX_STATE_ACC_BIAS) =  -R*dt;
     Fx_.block<3,3>(INDEX_STATE_VEL,INDEX_STATE_GYRO_BIAS) = Eigen::Matrix3d::Identity()*dt;
+    
+
     Eigen::AngleAxisd  AngleAxis_w(((w_m-gyro_bias_)*dt).norm(),((w_m-gyro_bias_)*dt).normalized());
     Eigen::Matrix3d R_w(AngleAxis_w);
-    // Fx_.block<3,3>(INDEX_STATE_ORI,INDEX_STATE_ORI) = R_w.transpose()*dt;//!!!!
-    Fx_.block<3,3>(INDEX_STATE_ORI,INDEX_STATE_ORI) = Eigen::Matrix3d::Identity()-BuildSkewMatrix(w_m-gyro_bias_)*dt;//!!!!
+    Fx_.block<3,3>(INDEX_STATE_ORI,INDEX_STATE_ORI) = R_w.transpose();//公式157c
+    // Fx_.block<3,3>(INDEX_STATE_ORI,INDEX_STATE_ORI) = Eigen::Matrix3d::Identity()-BuildSkewMatrix(w_m-gyro_bias_)*dt;//自己使用的公式
+    
     Fx_.block<3,3>(INDEX_STATE_ORI,INDEX_STATE_GYRO_BIAS) =  -Eigen::Matrix3d::Identity()*dt;
 
     P_ = Fx_*P_*Fx_.transpose()+Fi_*Qi_*Fi_.transpose();
@@ -151,11 +160,14 @@ bool ESKFQK::UpdateErrorState(const Eigen::Vector3d& a_m, const Eigen::Vector3d&
 bool ESKFQK::UpdateOdomEstimation(const Eigen::Vector3d& a_m, const Eigen::Vector3d& w_m, const double dt) {
     // 计算位置
     Eigen::Matrix3d R = q_.toRotationMatrix();
+
     pose_ += velocity_*dt+0.5*(R*(a_m-accel_bias_)+g_)*dt*dt;
     velocity_ += (R*(a_m-accel_bias_)+g_)*dt;
+
     Eigen::Vector3d d_theta = (w_m-gyro_bias_)*dt;
     Eigen::AngleAxisd dq(d_theta.norm(),d_theta.normalized());//!
     q_ = q_*Eigen::Quaterniond(dq);
+
     return true;
 }
 
@@ -171,7 +183,7 @@ void ESKFQK::ResetState() {
     P_ = G*P_*G.transpose();
 }
 
-// 估计值=估计值-误差量
+// 估计值=估计值+误差量
 void ESKFQK::EliminateError() {
     pose_ +=X_.block<3,1>(INDEX_STATE_POSI,0);
     velocity_ += X_.block<3,1>(INDEX_STATE_VEL, 0);

@@ -12,11 +12,11 @@ ESKF::ESKF(const YAML::Node &node) {
     double cov_prior_posi = node["covariance"]["prior"]["posi"].as<double>();
     double cov_prior_vel = node["covariance"]["prior"]["vel"].as<double>();
     double cov_prior_ori = node["covariance"]["prior"]["ori"].as<double>();
-    double cov_prior_epsilon = node["covariance"]["prior"]["epsilon"].as<double>();
-    double cov_prior_delta = node["covariance"]["prior"]["delta"].as<double>();
+    double cov_prior_epsilon = node["covariance"]["prior"]["gyro_delta"].as<double>();
+    double cov_prior_delta = node["covariance"]["prior"]["accel_delta"].as<double>();
     double cov_measurement_posi = node["covariance"]["measurement"]["posi"].as<double>();
-    double cov_process_gyro = node["covariance"]["process"]["gyro"].as<double>();
-    double cov_process_accel = node["covariance"]["process"]["accel"].as<double>();
+    double cov_process_gyro = node["covariance"]["process"]["gyro_delta"].as<double>();
+    double cov_process_accel = node["covariance"]["process"]["accel_delta"].as<double>();
     L_ = node["earth"]["latitude"].as<double>();
     g_ = Eigen::Vector3d(0.0, 0.0, -gravity);
     w_ = Eigen::Vector3d(0.0, earth_rotation_speed * cos(L_ * kDegree2Radian),

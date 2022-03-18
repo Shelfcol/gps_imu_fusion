@@ -63,6 +63,7 @@ private:
     bool use_observability_analysis_ = false;//是否进行可观测度分析
 
     const std::string work_space_path_;
+    std::string data_path_;
 };
 
 #endif //GPS_IMU_FUSION_ESKF_FLOW_H

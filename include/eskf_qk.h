@@ -65,6 +65,7 @@ private:
 
     bool ComputeAngularDelta(Eigen::Vector3d &angular_delta);
 
+    bool ObservationOfErrorState();
     /*!
      * 对误差进行滤波之后，需要在实际算出来的轨迹中，消除这部分误差
      */

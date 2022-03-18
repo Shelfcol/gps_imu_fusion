@@ -18,7 +18,7 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
 
     std::string config_file_path = work_space_path_ + "/config/config.yaml";
     YAML::Node config_node = YAML::LoadFile(config_file_path);
-
+    data_path_ = config_node["data_path"].as<std::string>();
     std::string filter_method = config_node["filter_method"].as<std::string>();
     if(filter_method == "ESKF"){
         filter_ptr_ = std::make_shared<ESKF>(config_node);
@@ -33,11 +33,12 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
         printf("no corres filter method");
         exit(-1);
     }
+
 }
 
 // 读取GPS和IMU数据
 bool FilterFlow::ReadData() {
-    const std::string data_path = work_space_path_ + "/data/raw_data1";
+    const std::string data_path = work_space_path_ + data_path_;
 
     if (imu_flow_ptr_->ReadIMUData(data_path, imu_data_buff_) &&
         gps_flow_ptr_->ReadGPSData(data_path, gps_data_buff_)
