@@ -7,17 +7,32 @@
 
 
 ESKF::ESKF(const YAML::Node &node) {
+
+    // 判断使用哪一组数据
+    std::string  data_path = node["data_path"].as<std::string>();
+    std::string cov_node_string;
+    if(data_path == "/data/raw_data") {
+        cov_node_string = "covariance";
+    } else if(data_path == "/data/raw_data1"){
+        cov_node_string = "covariance1";
+    } else {
+        printf("no corres covariance");
+        exit(0);
+    }
+
     double gravity = node["earth"]["gravity"].as<double>();
     double earth_rotation_speed = node["earth"]["rotation_speed"].as<double>();
-    double cov_prior_posi = node["covariance"]["prior"]["posi"].as<double>();
-    double cov_prior_vel = node["covariance"]["prior"]["vel"].as<double>();
-    double cov_prior_ori = node["covariance"]["prior"]["ori"].as<double>();
-    double cov_prior_epsilon = node["covariance"]["prior"]["gyro_delta"].as<double>();
-    double cov_prior_delta = node["covariance"]["prior"]["accel_delta"].as<double>();
-    double cov_measurement_posi = node["covariance"]["measurement"]["posi"].as<double>();
-    double cov_process_gyro = node["covariance"]["process"]["gyro_delta"].as<double>();
-    double cov_process_accel = node["covariance"]["process"]["accel_delta"].as<double>();
     L_ = node["earth"]["latitude"].as<double>();
+
+    double cov_prior_posi = node["ESKF"][cov_node_string]["prior"]["posi"].as<double>();
+    double cov_prior_vel = node["ESKF"][cov_node_string]["prior"]["vel"].as<double>();
+    double cov_prior_ori = node["ESKF"][cov_node_string]["prior"]["ori"].as<double>();
+    double cov_prior_epsilon = node["ESKF"][cov_node_string]["prior"]["gyro_delta"].as<double>();
+    double cov_prior_delta = node["ESKF"][cov_node_string]["prior"]["accel_delta"].as<double>();
+    double cov_measurement_posi = node["ESKF"][cov_node_string]["measurement"]["posi"].as<double>();
+    double cov_process_gyro = node["ESKF"][cov_node_string]["process"]["gyro_delta"].as<double>();
+    double cov_process_accel = node["ESKF"][cov_node_string]["process"]["accel_delta"].as<double>();
+
     g_ = Eigen::Vector3d(0.0, 0.0, -gravity);
     w_ = Eigen::Vector3d(0.0, earth_rotation_speed * cos(L_ * kDegree2Radian),
                          earth_rotation_speed * sin(L_ * kDegree2Radian)); // w_ie_n
@@ -130,6 +145,7 @@ bool ESKF::UpdateErrorState(double t, const Eigen::Vector3d &accel) {
     F_.block<3,3>(INDEX_STATE_VEL, INDEX_STATE_ORI) = F_23;
     F_.block<3,3>(INDEX_STATE_VEL, INDEX_STATE_ACC_BIAS) = pose_.block<3,3>(0,0);
     F_.block<3,3>(INDEX_STATE_ORI, INDEX_STATE_GYRO_BIAS) = -pose_.block<3,3>(0,0);
+    B_.setZero();
     B_.block<3,3>(INDEX_STATE_VEL, 3) = pose_.block<3,3>(0,0);
     B_.block<3,3>(INDEX_STATE_ORI, 0) = -pose_.block<3,3>(0,0);
 
@@ -138,7 +154,7 @@ bool ESKF::UpdateErrorState(double t, const Eigen::Vector3d &accel) {
 
     Ft_ = F_ * t;
 
-    X_ = Fk * X_ +Bk*W_; //? 没有加上BW，加不加影响不大
+    X_ = Fk * X_+Bk*W_; //? 没有加上BW，加不加影响不大
     P_ = Fk * P_ * Fk.transpose() + Bk * Q_ * Bk.transpose();
 
     return true;
@@ -202,11 +218,8 @@ bool ESKF::ComputeEarthTranform(Eigen::Matrix3d &R_nm_nm_1) {
     // 实际导航坐标系中，不动系(i系)是地心惯性系，我们需要的导航结果是相对于导航系(n系)的
     // 两个坐标系中有一个相对旋转，旋转角速度为w_in_n 。
     Eigen::Vector3d w_in_n = w_en_n + w_;  // 导航系(n系)相对于惯性系(i系)的旋转，包含导航系相对于地球的旋转和地球自转
-
     auto angular = delta_t * w_in_n;
-
-    Eigen::AngleAxisd angle_axisd(angular.norm(), angular.normalized());
-
+    Eigen::AngleAxisd angle_axisd(angular.norm(), angular.normalized());  
     R_nm_nm_1 = angle_axisd.toRotationMatrix().transpose(); // 取转置，得到i系相对于n系的转换
     return true;
 }
@@ -257,7 +270,6 @@ Eigen::Vector3d ESKF::GetUnbiasAccel(const Eigen::Vector3d &accel) {
 
 bool ESKF::ComputePosition(const Eigen::Vector3d& curr_vel, const Eigen::Vector3d& last_vel){
     double delta_t = imu_data_buff_.at(1).time - imu_data_buff_.at(0).time;
-
     pose_.block<3,1>(0,3) += 0.5 * delta_t * (curr_vel + last_vel);
 
     return true;
@@ -265,12 +277,6 @@ bool ESKF::ComputePosition(const Eigen::Vector3d& curr_vel, const Eigen::Vector3
 
 // 只将状态量置零
 void ESKF::ResetState() {
-    //P = G'PG'^T
-    // Eigen::Matrix<double,DIM_STATE,DIM_STATE>  G_err;
-    // G_err.setIdentity();
-    // G_err.block<3,3>(6,6) += BuildSkewMatrix(0.5*X_.block<3,1>(INDEX_STATE_ORI, 0)); 
-    // P_ = G_err*P_*G_err.transpose();
-
     X_.setZero();
 }
 
@@ -281,7 +287,6 @@ void ESKF::EliminateError() {
     velocity_ = velocity_ - X_.block<3,1>(INDEX_STATE_VEL, 0);
     Eigen::Matrix3d C_nn = Sophus::SO3d::exp(X_.block<3,1>(INDEX_STATE_ORI, 0)).matrix();
     pose_.block<3,3>(0,0) = C_nn * pose_.block<3,3>(0,0); // 固定坐标系更新，左乘
-    // std::cout<<"gyro_bias = "<<X_.block<3,1>(INDEX_STATE_GYRO_BIAS, 0)<<std::endl;
     gyro_bias_ = gyro_bias_ - X_.block<3,1>(INDEX_STATE_GYRO_BIAS, 0);
     accel_bias_ = accel_bias_ - X_.block<3,1>(INDEX_STATE_ACC_BIAS, 0);
 }

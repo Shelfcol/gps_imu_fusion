@@ -7,16 +7,30 @@
 constexpr double kDegree2Radian = M_PI / 180.0;
 
 EKF::EKF(const YAML::Node &node) {
+    // 判断使用哪一组数据
+    std::string  data_path = node["data_path"].as<std::string>();
+    std::string cov_node_string;
+    if(data_path == "/data/raw_data") {
+        cov_node_string = "covariance";
+    } else if(data_path == "/data/raw_data1"){
+        cov_node_string = "covariance1";
+    } else {
+        printf("no corres covariance");
+        exit(0);
+    }
+
+
     double gravity = node["earth"]["gravity"].as<double>();
     double earth_rotation_speed = node["earth"]["rotation_speed"].as<double>();
-    double cov_prior_posi = node["qk_covariance"]["prior"]["posi"].as<double>();
-    double cov_prior_vel = node["qk_covariance"]["prior"]["vel"].as<double>();
-    double cov_prior_ori = node["qk_covariance"]["prior"]["ori"].as<double>();
-    double cov_prior_epsilon = node["qk_covariance"]["prior"]["gyro_delta"].as<double>();
-    double cov_prior_delta = node["qk_covariance"]["prior"]["accel_delta"].as<double>();
-    double cov_measurement_posi = node["qk_covariance"]["measurement"]["posi"].as<double>();
-    double cov_process_gyro = node["qk_covariance"]["process"]["gyro_delta"].as<double>();
-    double cov_process_accel = node["qk_covariance"]["process"]["accel_delta"].as<double>();
+
+    double cov_prior_posi = node["EKF"][cov_node_string]["prior"]["posi"].as<double>();
+    double cov_prior_vel = node["EKF"][cov_node_string]["prior"]["vel"].as<double>();
+    double cov_prior_ori = node["EKF"][cov_node_string]["prior"]["ori"].as<double>();
+    double cov_prior_epsilon = node["EKF"][cov_node_string]["prior"]["gyro_delta"].as<double>();
+    double cov_prior_delta = node["EKF"][cov_node_string]["prior"]["accel_delta"].as<double>();
+    double cov_measurement_posi = node["EKF"][cov_node_string]["measurement"]["posi"].as<double>();
+    double cov_process_gyro = node["EKF"][cov_node_string]["process"]["gyro_delta"].as<double>();
+    double cov_process_accel = node["EKF"][cov_node_string]["process"]["accel_delta"].as<double>();
     g_ = Eigen::Vector3d(0.0, 0.0, -gravity);
 
 

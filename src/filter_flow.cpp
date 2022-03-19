@@ -33,6 +33,7 @@ FilterFlow::FilterFlow(const std::string &work_space_path)
         printf("no corres filter method");
         exit(-1);
     }
+    printf("data_path: %s,  filter method: %s\n",data_path_.c_str(), filter_method.c_str());
 
 }
 

@@ -1,6 +1,6 @@
-filter_method: EKF #ESKF ,ESKFQK
+filter_method: ESKFQK #EKF， ESKF, ESKFQK
 
-data_path: /data/raw_data1 #数据使用  /data/raw_data; /data/raw_data1: raw_data是使用mid-accuracy IMU生成， raw_data1是使用low-accuracy IMU生成
+data_path: /data/raw_data #数据使用  /data/raw_data; /data/raw_data1: raw_data是使用mid-accuracy IMU生成， raw_data1是使用low-accuracy IMU生成
 
 earth:
   rotation_speed: 7.272205216e-05
@@ -8,50 +8,94 @@ earth:
   latitude: 32
   longtitude: 120
 
-covariance:
-  prior:
-    posi: 1 # 1.0e-4
-    vel: 1 # 1.0e-4
-    ori: 1 # 1.0e-6
-    gyro_delta: 1.0e-3  # 1.0e-6
-    accel_delta: 1.0e-3 # 1.0e-6
-  process: # Q
-    gyro_delta: 1.0e-3
-    accel_delta: 1.0e-4
-  measurement:
-    posi: 14
+# EKF的对应的两组数据的参数
+EKF:
+  covariance: # 数据raw_data
+    prior:
+      posi: 1 # 1.0e-4
+      vel: 1 # 1.0e-4
+      ori: 1 # 1.0e-6
+      gyro_delta: 1.0e-3  # 1.0e-6
+      accel_delta: 1.0e-3 # 1.0e-6
+    process: # Q 相信模型的程度
+      gyro_delta: 5.0
+      accel_delta: 5.0
+    measurement:
+      posi: 10
+  
+  
+  covariance1: # 数据raw_data1
+    prior:
+      posi: 1 # 1.0e-4
+      vel: 1 # 1.0e-4
+      ori: 1 # 1.0e-6
+      gyro_delta: 1.0e-3  # 1.0e-6
+      accel_delta: 1.0e-3 # 1.0e-6
+    process: # Q
+      gyro_delta: 1.0
+      accel_delta: 1.0
+    measurement:
+      posi: 10
 
-# quaternion kinematics for error state kalman filter
-# 使用raw data
-# qk_covariance:
-#   prior:
-#     posi: 1.0e-4
-#     vel: 1.0e-4
-#     ori: 1.0e-6
-#     accel_delta: 1.0e-6
-#     gyro_delta: 1.0e-6
-#     g_delta: 1.0e-6
-#   process: # Q
-#     vel_delta: 1.0e-5
-#     ori_delta: 1.0e-5
-#     accel_delta: 1.0e-4
-#     gyro_delta: 1.0e-5
-#   measurement:
-#     posi: 8
+# ESKF的对应的两组数据的参数
+ESKF:
+  covariance:
+    prior:
+      posi: 1.0e-4
+      vel: 1.0e-4
+      ori: 1.0e-6
+      gyro_delta: 1.0e-6
+      accel_delta: 1.0e-6
+    process: # Q
+      gyro_delta: 1.0e-5
+      accel_delta: 1.0e-5
+    measurement:
+      posi: 10
+  ### 没调出来
+  covariance1:
+    prior:
+      posi: 1.0
+      vel: 1.0
+      ori: 1.0
+      gyro_delta: 1.0e-1
+      accel_delta: 1.0e-1
+    process: # Q
+      gyro_delta: 0.1
+      accel_delta: 0.1
+    measurement:
+      posi: 10
 
-# 使用raw_data1,也可以用在raw_data上，只是精度会下降
-qk_covariance:
-  prior:
-    posi: 1.0e-1
-    vel: 1.0e-1
-    ori: 1.0e-1
-    accel_delta: 1.0e-1
-    gyro_delta: 1.0e-1
-    g_delta: 1.0e-1
-  process: # Q
-    vel_delta: 1.0
-    ori_delta: 1.0
-    accel_delta: 2.0
-    gyro_delta: 2.0
-  measurement:
-    posi: 35
+
+# Quaternion kinematics for error state kalman filter的算法实现
+ESKFQK:
+  covariance:
+    prior:
+      posi: 1.0e-1
+      vel: 1.0e-1
+      ori: 1.0e-1
+      accel_delta: 1.0e-1
+      gyro_delta: 1.0e-1
+      g_delta: 1.0e-1
+    process: # Q
+      vel_delta: 1.0e-3
+      ori_delta: 1.0e-1
+      accel_delta: 1.0e-2
+      gyro_delta: 1.0e-3
+    measurement:
+      posi: 35
+
+  covariance1:
+    prior:
+      posi: 1.0e-1
+      vel: 1.0e-1
+      ori: 1.0e-1
+      accel_delta: 1.0e-1
+      gyro_delta: 1.0e-1
+      g_delta: 1.0e-1
+    process: # Q
+      vel_delta: 1.0e-3
+      ori_delta: 1.0e-1
+      accel_delta: 1.0e-2
+      gyro_delta: 1.0e-3
+    measurement:
+      posi: 35
