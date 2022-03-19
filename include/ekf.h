@@ -63,35 +63,6 @@ private:
     bool UpdateEkfState(const double t, const Eigen::Vector3d &accel, const Eigen::Vector3d& curr_angle_velocity,
                         const Eigen::Quaterniond& curr_ori );
 
-    bool ComputeAngularDelta(Eigen::Vector3d &angular_delta);
-
-    /*!
-     * 通过IMU计算当前姿态
-     * @param angular_delta
-     * @param R_nm_nm_1
-     * @param curr_R
-     * @param last_R
-     * @return
-     */
-    bool ComputeOrientation(const Eigen::Vector3d &angular_delta,
-                            Eigen::Matrix3d &curr_R,
-                            Eigen::Matrix3d &last_R);
-
-    bool ComputeVelocity(Eigen::Vector3d &curr_vel,
-                         Eigen::Vector3d &last_vel,
-                         const Eigen::Matrix3d &curr_R,
-                         const Eigen::Matrix3d last_R);
-
-    Eigen::Vector3d GetUnbiasAccel(const Eigen::Vector3d &accel);
-
-    /*!
-     * 通过imu计算当前位移
-     * @param curr_vel
-     * @param last_vel
-     * @return
-     */
-    bool ComputePosition(const Eigen::Vector3d& curr_vel, const Eigen::Vector3d& last_vel);
-
     void UpdateState();
 
 
@@ -135,20 +106,15 @@ private:
     TypeMatrixF Ft_;
     TypeVectorX gt_; // 加速度项
 
-    Eigen::Vector3d init_velocity_ = Eigen::Vector3d::Zero();
     Eigen::Vector3d velocity_ = Eigen::Vector3d::Zero();
-    Eigen::Matrix4d init_pose_ = Eigen::Matrix4d::Identity();
     Eigen::Matrix4d pose_ = Eigen::Matrix4d::Identity();
 
     Eigen::Vector3d gyro_bias_ = Eigen::Vector3d::Zero();
     Eigen::Vector3d accel_bias_ = Eigen::Vector3d::Zero();
 
     Eigen::Vector3d g_;//重力加速度
-    Eigen::Vector3d w_;//地球自传角速度
 
     GPSData curr_gps_data_;
-
-    double L_ = 0.0;//纬度
 
     std::deque<IMUData> imu_data_buff_; // 只保存两个IMU数据
 
