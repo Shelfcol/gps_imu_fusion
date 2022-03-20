@@ -38,6 +38,10 @@ make
 ```
 
 ## 3. 运行
+本代码现在支持EKF，基于高精度IMU模型的ESKF和Joan Sola大神的Quaternion kinematics for the 
+error-state KF。调试好的数据有两组。
+
+如果想尝试不同的方法和不同的数据，只需要修改config.yaml里面的配置文件即可
 
 ```shell
 cd eskf-gps-imu-fusion/build

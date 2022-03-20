@@ -32,7 +32,8 @@ ESKF::ESKF(const YAML::Node &node) {
     double cov_measurement_posi = node["ESKF"][cov_node_string]["measurement"]["posi"].as<double>();
     double cov_process_gyro = node["ESKF"][cov_node_string]["process"]["gyro_delta"].as<double>();
     double cov_process_accel = node["ESKF"][cov_node_string]["process"]["accel_delta"].as<double>();
-
+    double cov_w_gyro = node["ESKF"][cov_node_string]["IMU_noise"]["gyro_delta"].as<double>(); // IMU数据的噪声，用来组成W矩阵
+    double cov_w_accel = node["ESKF"][cov_node_string]["IMU_noise"]["accel_delta"].as<double>();
     g_ = Eigen::Vector3d(0.0, 0.0, -gravity);
     w_ = Eigen::Vector3d(0.0, earth_rotation_speed * cos(L_ * kDegree2Radian),
                          earth_rotation_speed * sin(L_ * kDegree2Radian)); // w_ie_n
@@ -41,7 +42,7 @@ ESKF::ESKF(const YAML::Node &node) {
                    cov_prior_epsilon, cov_prior_delta);
     SetCovarianceR(cov_measurement_posi);
     SetCovarianceQ(cov_process_gyro, cov_process_accel);
-    SetCovarianceW(cov_process_gyro, cov_process_accel);
+    SetCovarianceW(cov_w_gyro, cov_w_accel);
 
     X_.setZero(); // 初始化为零矩阵
     F_.setZero(); // 初始化为零矩阵
@@ -154,7 +155,7 @@ bool ESKF::UpdateErrorState(double t, const Eigen::Vector3d &accel) {
 
     Ft_ = F_ * t;
 
-    X_ = Fk * X_+Bk*W_; //? 没有加上BW，加不加影响不大
+    X_ = Fk * X_+Bk*W_;
     P_ = Fk * P_ * Fk.transpose() + Bk * Q_ * Bk.transpose();
 
     return true;

@@ -19,7 +19,6 @@ EKF::EKF(const YAML::Node &node) {
         exit(0);
     }
 
-
     double gravity = node["earth"]["gravity"].as<double>();
     double earth_rotation_speed = node["earth"]["rotation_speed"].as<double>();
 
@@ -31,14 +30,15 @@ EKF::EKF(const YAML::Node &node) {
     double cov_measurement_posi = node["EKF"][cov_node_string]["measurement"]["posi"].as<double>();
     double cov_process_gyro = node["EKF"][cov_node_string]["process"]["gyro_delta"].as<double>();
     double cov_process_accel = node["EKF"][cov_node_string]["process"]["accel_delta"].as<double>();
-    g_ = Eigen::Vector3d(0.0, 0.0, -gravity);
 
+    double cov_w_gyro = node["EKF"][cov_node_string]["IMU_noise"]["gyro_delta"].as<double>();
+    double cov_w_accel = node["EKF"][cov_node_string]["IMU_noise"]["accel_delta"].as<double>();
 
     SetCovarianceP(cov_prior_posi, cov_prior_vel, cov_prior_ori,
                    cov_prior_epsilon, cov_prior_delta);
     SetCovarianceR(cov_measurement_posi);
     SetCovarianceQ(cov_process_gyro, cov_process_accel);
-    SetCovarianceW(cov_process_gyro, cov_process_accel);
+    SetCovarianceW(cov_w_gyro, cov_w_accel);
 
     gt_.setZero();
     gt_.block<3,1>(INDEX_STATE_VEL,0) = Eigen::Vector3d(0, 0, -gravity);
@@ -167,7 +167,6 @@ bool EKF::UpdateEkfState(const double t, const Eigen::Vector3d &accel, const Eig
                                                                         -q2,q1,q0).finished();
     F_.block<4,3>(INDEX_STATE_ORI,INDEX_STATE_GYRO_BIAS) = Fqkesi;
 
-
     B_.setZero();
     B_.block<3,3>(INDEX_STATE_VEL, 3) = pose_.block<3,3>(0,0);
     B_.block<4,3>(INDEX_STATE_ORI, 0) = Fqkesi;
@@ -175,9 +174,7 @@ bool EKF::UpdateEkfState(const double t, const Eigen::Vector3d &accel, const Eig
     TypeMatrixF Fk = TypeMatrixF::Identity() + F_ * t;
     TypeMatrixB Bk = B_ * t;
 
-    // Ft_ = F_ * t;
-
-    X_ = Fk * X_ ;//+ Bk * W_ ;//+ gt_*t ; 
+    X_ = Fk * X_ + Bk * W_+ gt_*t ;  //现象：不加W_和gt_两项时，效果更好。
     P_ = Fk * P_ * Fk.transpose() + Bk * Q_ * Bk.transpose();
 
     return true;
