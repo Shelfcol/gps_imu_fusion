@@ -20,7 +20,6 @@ EKF::EKF(const YAML::Node &node) {
     }
 
     double gravity = node["earth"]["gravity"].as<double>();
-    double earth_rotation_speed = node["earth"]["rotation_speed"].as<double>();
 
     double cov_prior_posi = node["EKF"][cov_node_string]["prior"]["posi"].as<double>();
     double cov_prior_vel = node["EKF"][cov_node_string]["prior"]["vel"].as<double>();
@@ -44,16 +43,16 @@ EKF::EKF(const YAML::Node &node) {
     gt_.block<3,1>(INDEX_STATE_VEL,0) = Eigen::Vector3d(0, 0, -gravity);
 }
 
-void EKF::SetCovarianceW(double gyro_noise, double accel_noise) {
+void EKF::SetCovarianceW(double gyro_w_noise, double accel_w_noise) {
     W_.setZero();
-    W_.block<3,1>(0,0) = Eigen::Vector3d(gyro_noise,gyro_noise,gyro_noise);
-    W_.block<3,1>(3,0) = Eigen::Vector3d(accel_noise,accel_noise,accel_noise);
+    W_.block<3,1>(0,0) = Eigen::Vector3d(gyro_w_noise,gyro_w_noise,gyro_w_noise);
+    W_.block<3,1>(3,0) = Eigen::Vector3d(accel_w_noise,accel_w_noise,accel_w_noise);
 }
 
-void EKF::SetCovarianceQ(double gyro_noise, double accel_noise) {
+void EKF::SetCovarianceQ(double gyro_noise_cov, double accel_noise_cov) {
     Q_.setZero();
-    Q_.block<3,3>(0,0) = Eigen::Matrix3d::Identity() * gyro_noise * gyro_noise; // 平方
-    Q_.block<3,3>(3,3) = Eigen::Matrix3d::Identity() * accel_noise * accel_noise;
+    Q_.block<3,3>(0,0) = Eigen::Matrix3d::Identity() * gyro_noise_cov * gyro_noise_cov; // 平方
+    Q_.block<3,3>(3,3) = Eigen::Matrix3d::Identity() * accel_noise_cov * accel_noise_cov;
 }
 
 void EKF::SetCovarianceR(double posi_noise) {

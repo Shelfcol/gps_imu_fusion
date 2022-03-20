@@ -55,8 +55,8 @@ ESKF::ESKF(const YAML::Node &node) {
 
 void ESKF::SetCovarianceW(double gyro_noise, double accel_noise) {
     W_.setZero();
-    W_.block<3,1>(0,0) = Eigen::Vector3d(gyro_noise,gyro_noise,gyro_noise);
-    W_.block<3,1>(3,0) = Eigen::Vector3d(accel_noise,accel_noise,accel_noise);
+    W_.block<3,1>(0,0) = Eigen::Vector3d(accel_noise,accel_noise,accel_noise);
+    W_.block<3,1>(3,0) = Eigen::Vector3d(gyro_noise,gyro_noise,gyro_noise);
 }
 
 void ESKF::SetCovarianceQ(double gyro_noise, double accel_noise) {

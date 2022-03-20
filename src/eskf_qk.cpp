@@ -4,7 +4,6 @@
 #include "eskf_qk.h"
 #include "../3rd/sophus/se3.hpp"
 
-
 ESKFQK::ESKFQK(const YAML::Node &node) {
 
     // 判断使用哪一组数据

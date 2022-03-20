@@ -1,4 +1,4 @@
-filter_method: ESKFQK #EKF， ESKF, ESKFQK
+filter_method: ESKF #EKF， ESKF, ESKFQK
 
 data_path: /data/raw_data1 #数据使用  /data/raw_data; /data/raw_data1: raw_data是使用mid-accuracy IMU生成， raw_data1是使用low-accuracy IMU生成
 
@@ -34,13 +34,13 @@ EKF:
       gyro_delta: 1.0e-3  # 1.0e-6
       accel_delta: 1.0e-3 # 1.0e-6
     process: # Q
-      gyro_delta: 2
-      accel_delta: 2
+      gyro_delta: 20
+      accel_delta: 20
     IMU_noise: # 器件噪声  W矩阵
-      gyro_delta: 0.1
-      accel_delta: 0.1
+      gyro_delta: 0.01
+      accel_delta: 0.01
     measurement:
-      posi: 10
+      posi: 35
 
 # ESKF的对应的两组数据的参数
 ESKF:
@@ -52,27 +52,28 @@ ESKF:
       gyro_delta: 1.0e-6
       accel_delta: 1.0e-6
     process: # Q
-      gyro_delta: 1.0e-5
-      accel_delta: 1.0e-5
+      gyro_delta: 1.0e-1
+      accel_delta: 1.0e-1
     IMU_noise: # 器件噪声  W矩阵
-      gyro_delta: 0.01
-      accel_delta: 0.01    
+      gyro_delta: 0.001
+      accel_delta: 0.001    
     measurement:
-      posi: 10
+      posi: 20
+
   ### 没调出来
   covariance1:
     prior:
-      posi: 1.0
-      vel: 1.0
+      posi: 1.0e-1
+      vel: 1.0e-1
       ori: 1.0
-      gyro_delta: 1.0e-1
-      accel_delta: 1.0e-1
+      gyro_delta: 1.0
+      accel_delta: 1.0
     process: # Q
       gyro_delta: 10
       accel_delta: 10
     IMU_noise: # 器件噪声  W矩阵
-      gyro_delta: 0.1
-      accel_delta: 0.1
+      gyro_delta: 0.01
+      accel_delta: 0.01
     measurement:
       posi: 25
 
@@ -87,16 +88,16 @@ ESKFQK:
       accel_delta: 1.0e-1
       gyro_delta: 1.0e-1
       g_delta: 1.0e-1
-    process: # Q
-      vel_delta: 1.0e-3
-      ori_delta: 1.0e-1
+    process: # Q 我的模型应该是比较好的
+      vel_delta: 1.0e-2
+      ori_delta: 1.0e-2
       accel_delta: 1.0e-2
-      gyro_delta: 1.0e-3
+      gyro_delta: 1.0e-2
     IMU_noise: # 器件噪声  W矩阵
       gyro_delta: 0.01
       accel_delta: 0.01
     measurement:
-      posi: 35
+      posi: 30
 
   covariance1:
     prior:

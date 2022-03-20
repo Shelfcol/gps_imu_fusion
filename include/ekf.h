@@ -47,7 +47,7 @@ public:
 
 private:
     void SetCovarianceQ(double gyro_noise_cov, double accel_noise_cov);
-    void SetCovarianceW(double gyro_noise_cov, double accel_noise_cov);
+    void SetCovarianceW(double gyro_w_noise, double accel_w_noise);
 
     void SetCovarianceR(double posi_noise_cov);
 
