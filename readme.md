@@ -6,9 +6,9 @@
 ![融合IMU数据之后的GPS轨迹效果](/data/raw_data1/results/trajectory.png)
 ![融合IMU数据之后的GPS轨迹效果](/data/raw_data1/results/xyz_view.png)
 
-绿色轨迹：ground truth
-蓝色轨迹：fuse IMU and GPS
-红色轨迹：GPS
+蓝色轨迹：ground truth（图片看不清）
+红色轨迹：fuse IMU and GPS
+绿色轨迹：GPS
 
 已经实现的滤波方法：
 
