@@ -1,6 +1,6 @@
 ### Forked from https://github.com/zm0612/eskf-gps-imu-fusion
 
-# ESKF融合IMU与GPS数据
+# 卡尔曼融合IMU与GPS数据
 结果如下：
 
 ![融合IMU数据之后的GPS轨迹效果](/data/raw_data1/results/trajectory.png)
@@ -10,7 +10,10 @@
 蓝色轨迹：fuse IMU and GPS
 红色轨迹：GPS
 
-本人的实现方法请参考博客[《Quaternion kinematics for error state kalman filter实现GPS+IMU融合，（附源码）》](https://blog.csdn.net/qq_38650944/article/details/123580686)
+已经实现的滤波方法：
+EKF：[《基于导航信息的EKF滤波算法实现（附源码）》]（https://blog.csdn.net/qq_38650944/article/details/123594568?spm=1001.2014.3001.5502）
+基于高精度IMU模型的ESKF（fork代码的原作者的实现，这里表示感谢）：[《【附源码+代码注释】误差状态卡尔曼滤波(error-state Kalman Filter)，扩展卡尔曼滤波，实现GPS+IMU融合，EKF ESKF GPS+IMU》](https://blog.csdn.net/u011341856/article/details/114262451)
+Joan Sola大神的Quaternion kinematics for the error-state KF：[《Quaternion kinematics for error state kalman filter实现GPS+IMU融合，（附源码）》](https://blog.csdn.net/qq_38650944/article/details/123580686)
 
 欢迎大家交流呀！
 ## 1.  依赖库
