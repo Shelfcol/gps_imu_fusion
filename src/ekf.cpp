@@ -173,7 +173,7 @@ bool EKF::UpdateEkfState(const double t, const Eigen::Vector3d &accel, const Eig
     TypeMatrixF Fk = TypeMatrixF::Identity() + F_ * t;
     TypeMatrixB Bk = B_ * t;
 
-    X_ = Fk * X_ + Bk * W_+ gt_*t ;  //现象：不加W_和gt_两项时，效果更好。
+    X_ = Fk * X_ + Bk * W_+ gt_*t ;  
     P_ = Fk * P_ * Fk.transpose() + Bk * Q_ * Bk.transpose();
 
     return true;

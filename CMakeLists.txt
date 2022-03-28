@@ -15,6 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(DEPS SHARED
     src/eskf.cpp
+    src/ukf.cpp
     src/eskf_qk.cpp
     src/ekf.cpp
     src/gps_flow.cpp

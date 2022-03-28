@@ -45,7 +45,7 @@ ESKFQK::ESKFQK(const YAML::Node &node) {
 }
 
 void ESKFQK::SetCovarianceV(double measurement_noise) {
-    V_ = Eigen::Matrix3d::Identity()*measurement_noise;
+    V_ = Eigen::Matrix3d::Identity()*measurement_noise; //! 这里有问题
 }
 
 void ESKFQK::SetCovarianceQi(double v_noise, double q_noise, double a_noise, double w_noise) {

@@ -1,4 +1,4 @@
-filter_method: ESKF #EKF， ESKF, ESKFQK
+filter_method: UKF #EKF， ESKF, ESKFQK，UKF
 
 data_path: /data/raw_data1 #数据使用  /data/raw_data; /data/raw_data1: raw_data是使用mid-accuracy IMU生成， raw_data1是使用low-accuracy IMU生成
 
@@ -81,7 +81,7 @@ ESKF:
 # Quaternion kinematics for error state kalman filter的算法实现
 ESKFQK:
   covariance:
-    prior:
+    prior: # 先验P矩阵
       posi: 1.0e-1
       vel: 1.0e-1
       ori: 1.0e-1
@@ -117,3 +117,41 @@ ESKFQK:
       accel_delta: 0.1
     measurement:
       posi: 35
+
+# UKF
+UKF:
+  covariance:
+    # 以下所有的都是平方项
+    prior: # P矩阵
+      posi2: 1.0e-1
+      vel2: 1.0e-1
+      ori2: 1.0e-1
+      accel_delta2: 1.0e-1
+      gyro_delta2: 1.0e-1
+      g_delta2: 1.0e-1
+    IMU_noise: # Q
+      acc_delta2: 1.0e-4
+      gyro_delta2: 1.0e-4
+      accel_bias_delta2: 1.0e-4
+      gyro_bias_delta2: 1.0e-4
+    # 非平方项
+    measurement: # 观测矩阵R
+      posi: 30
+
+  covariance1:
+    # 以下所有的都是平方项
+    prior: # P矩阵
+      posi2: 1.0e-1
+      vel2: 1.0e-1
+      ori2: 1.0e-1
+      accel_delta2: 1.0e-1
+      gyro_delta2: 1.0e-1
+      g_delta2: 1.0e-1
+    IMU_noise: # Q
+      acc_delta2: 1.0e-1
+      gyro_delta2: 1.0e-1
+      accel_bias_delta2: 1.0e-1
+      gyro_bias_delta2: 1.0e-1
+    # 非平方项
+    measurement: # 观测矩阵R
+      posi: 30

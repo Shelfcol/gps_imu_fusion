@@ -79,7 +79,7 @@ private:
 private:
     static const unsigned int DIM_STATE = 18; // 状态向量
     static const unsigned int DIM_STATE_NOISE = 12; // 噪声只有12维， delta v q a w
-    static const unsigned int DIM_MEASUREMENT = 3; // 观测向量只有6维
+    static const unsigned int DIM_MEASUREMENT = 3; // 观测向量只有3维
     static const unsigned int DIM_MEASUREMENT_NOISE = 3; // 观测噪声
 
     static const unsigned int INDEX_STATE_POSI = 0; // 位置
