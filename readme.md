@@ -7,7 +7,9 @@
 ![融合IMU数据之后的GPS轨迹效果](/data/raw_data1/results/xyz_view.png)
 
 蓝色轨迹：ground truth（图片看不清）
+
 红色轨迹：fuse IMU and GPS
+
 绿色轨迹：GPS
 
 已经实现的滤波方法：
@@ -20,7 +22,7 @@ Joan Sola大神的Quaternion kinematics for the error-state KF：[Quaternion kin
 
 TODO： 
 
-UKF滤波，准备参考[无损卡尔曼滤波UKF与多传感器融合](https://blog.csdn.net/hjwang1/article/details/81024902)，后面有时间补上
+UKF滤波，准备参考[无损卡尔曼滤波UKF与多传感器融合](https://blog.csdn.net/Young_Gy/article/details/78542754)，后面有时间补上
 
 欢迎大家交流呀！
 ## 1.  依赖库
