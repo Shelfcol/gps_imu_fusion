@@ -4,7 +4,7 @@
 
 #ifndef GPS_IMU_FUSION_UKF_H
 #define GPS_IMU_FUSION_UKF_H
-
+#include <omp.h>
 #include "imu_data.h"
 #include "gps_data.h"
 #include "filter_interface.h"
@@ -59,8 +59,10 @@ private:
     void SetCovarianceQ(const double cov_acc_delta, const double cov_gyro_delta, 
                         const double cov_accel_bias_delta, const double cov_gyro_bias_delta);
 
-
-
+    void calcWeights();
+    Eigen::MatrixXd   GetRootSquare(const Eigen::MatrixXd& M, const bool is_SVD);
+    // 使用状态量和方差生成sigma点。这里可能是增广矩阵和非增广矩阵，行数可能不包含噪声项
+    Eigen::MatrixXd GenerateSigmaMatrix(const Eigen::MatrixXd& X, const Eigen::MatrixXd& P);
     /*!
      * 通过IMU计算位姿和速度
      * @return
@@ -133,9 +135,9 @@ private:
     TypeMatrixT T_; // cross-correlation
     TypeMatrixS S_; // 预测的观测噪声
 
-    int lamda; // 代表关键点散开情况
     int n_a; // 增广状态量维度
-    int n_sigma; // sigma点
+    int sigma_points_num_; // sigma点个数
+    double scale; // 生成sigma点时的尺度信息
 
     // // 状态量
     // Eigen::Vector3d pose_ = Eigen::Vector3d::Zero();

@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(ALL_TARGET_LIBRARIES "")
 
+find_package(OpenMP)
+
 include(cmake/eigen.cmake)
 include(cmake/YAML.cmake)
 include(cmake/global_defination.cmake)
@@ -29,6 +31,7 @@ add_library(DEPS SHARED
 
 target_link_libraries(DEPS
     ${ALL_TARGET_LIBRARIES}
+    OpenMP::OpenMP_CXX
 )
 
 add_executable(gps_imu_fusion app/gps_imu_fusion.cpp)

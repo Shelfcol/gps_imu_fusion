@@ -148,10 +148,10 @@ UKF:
       gyro_delta2: 1.0e-1
       g_delta2: 1.0e-1
     IMU_noise: # Q
-      acc_delta2: 1.0e-1
-      gyro_delta2: 1.0e-1
-      accel_bias_delta2: 1.0e-1
-      gyro_bias_delta2: 1.0e-1
+      acc_delta2: 1.0e-3
+      gyro_delta2: 1.0e-3
+      accel_bias_delta2: 1.0e-3
+      gyro_bias_delta2: 1.0e-3
     # 非平方项
     measurement: # 观测矩阵R
       posi: 30
